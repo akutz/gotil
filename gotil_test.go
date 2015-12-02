@@ -384,3 +384,21 @@ func TestStringInSliceCS(t *testing.T) {
 		t.Fatal("d in 'a, b, c'")
 	}
 }
+
+func TestWriteIndented(t *testing.T) {
+	s := []byte("Hello,\nworld.")
+	s2 := "  Hello,\n  world."
+	s4 := "    Hello,\n    world."
+
+	w2 := &bytes.Buffer{}
+	if err := WriteIndentedN(w2, s, 2); err != nil {
+		t.Fatal(err)
+	}
+	assert.EqualValues(t, s2, w2.String())
+
+	w1 := &bytes.Buffer{}
+	if err := WriteIndented(w1, s); err != nil {
+		t.Fatal(err)
+	}
+	assert.EqualValues(t, s4, w1.String())
+}

@@ -2,6 +2,8 @@ package gotil
 
 import (
 	"bufio"
+	"bytes"
+	"fmt"
 	"io"
 	"math/rand"
 	"net"
@@ -230,4 +232,36 @@ func ParseAddress(addr string) (proto string, path string, err error) {
 // and carriage return characters.
 func Trim(text string) string {
 	return trimRx.FindStringSubmatch(text)[1]
+}
+
+// WriteIndentedN indents all lines n spaces.
+func WriteIndentedN(w io.Writer, b []byte, n int) error {
+	s := bufio.NewScanner(bytes.NewReader(b))
+	if !s.Scan() {
+		return nil
+	}
+	l := s.Text()
+	for {
+		for x := 0; x < n; x++ {
+			if _, err := fmt.Fprint(w, " "); err != nil {
+				return err
+			}
+		}
+		if _, err := fmt.Fprint(w, l); err != nil {
+			return err
+		}
+		if !s.Scan() {
+			break
+		}
+		l = s.Text()
+		if _, err := fmt.Fprint(w, "\n"); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// WriteIndented indents all lines four spaces.
+func WriteIndented(w io.Writer, b []byte) error {
+	return WriteIndentedN(w, b, 4)
 }
