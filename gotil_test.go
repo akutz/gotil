@@ -402,3 +402,7 @@ func TestWriteIndented(t *testing.T) {
 	}
 	assert.EqualValues(t, s4, w1.String())
 }
+
+func TestHomeDir(t *testing.T) {
+	assert.NotEqual(t, "", HomeDir())
+}

@@ -9,6 +9,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"os/user"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -29,8 +30,10 @@ const (
 )
 
 var (
-	trimRx    *regexp.Regexp
-	netAddrRx *regexp.Regexp
+	homeDir    string
+	homeDirSet bool
+	trimRx     *regexp.Regexp
+	netAddrRx  *regexp.Regexp
 )
 
 func init() {
@@ -264,4 +267,16 @@ func WriteIndentedN(w io.Writer, b []byte, n int) error {
 // WriteIndented indents all lines four spaces.
 func WriteIndented(w io.Writer, b []byte) error {
 	return WriteIndentedN(w, b, 4)
+}
+
+// HomeDir returns the home directory of the user that owns the current process.
+func HomeDir() string {
+	if homeDirSet {
+		return homeDir
+	}
+	if user, err := user.Current(); err == nil {
+		homeDir = user.HomeDir
+	}
+	homeDirSet = true
+	return homeDir
 }
