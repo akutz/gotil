@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"os"
 	"strings"
 	"testing"
@@ -405,4 +406,30 @@ func TestWriteIndented(t *testing.T) {
 
 func TestHomeDir(t *testing.T) {
 	assert.NotEqual(t, "", HomeDir())
+}
+
+func TestRandomTCPPort(t *testing.T) {
+	p := RandomTCPPort()
+	addr := fmt.Sprintf("127.0.0.1:%d", p)
+	t.Logf("listening on addr %s", addr)
+	conn, err := net.Listen("tcp", addr)
+	if err != nil {
+		t.Fatal(err)
+	}
+	conn.Close()
+}
+
+func TestIsTCPPortAvailable(t *testing.T) {
+	p := RandomTCPPort()
+	addr := fmt.Sprintf("127.0.0.1:%d", p)
+	t.Logf("listening on addr %s", addr)
+	conn, err := net.Listen("tcp", addr)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer conn.Close()
+	_, err2 := net.Listen("tcp", addr)
+	if err2 == nil {
+		t.Fatalf("addr should be in use %s", addr)
+	}
 }
