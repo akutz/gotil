@@ -9,6 +9,5 @@ import:
     repo:    https://github.com/kardianos/osext.git
     vcs:     git
   - package: github.com/stretchr/testify
-    ref:     feature/glide
-    repo:    https://github.com/akutz/testify.git
+    repo:    https://github.com/stretchr/testify.git
     vcs:     git
